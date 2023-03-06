@@ -1,0 +1,26 @@
+
+#Pings every computer listed in the spreadsheet
+#Displays successful tests in green, and unsucessful in red
+$Output= @()
+    $computers = Import-Csv -Path .\usethis.csv
+    foreach ($comp in $computers){
+      if (Test-Connection -Delay 15 -ComputerName $comp.Name -Count 1 -ErrorAction SilentlyContinue){
+       $Output+= "$comp,up"
+       Write-Host "$comp,up" -ForegroundColor Green
+      }
+  else{
+    $Output+= "$comp,down"
+    Write-Host "$comp,down" -ForegroundColor Red
+  }
+}
+
+
+
+#Finds the serial numbers for all systems listed in the csv file (use 1 comma)
+$computers = Import-Csv -Path .\usethis.csv
+Foreach ($comp in $computers) {
+(Get-WmiObject win32_bios –ComputerName $comp.Name).SerialNumber | Format-List SerialNumber
+}
+
+
+
